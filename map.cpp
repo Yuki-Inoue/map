@@ -3,6 +3,8 @@
 #include <utility>
 #include <list>
 #include <fstream>
+#include <algorithm>
+#include <vector>
 
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/utility.hpp>
@@ -90,20 +92,8 @@ void write_map(const char *filep, const Map &m){
   archive << m;
 }
 
-int main(int argc, char **argv){
 
-  if(argc != 2){
-    cout << "usage: " << argv[0] << " <archive>" << endl;
-    return 0;
-  }
-
-
-  Map map;
-  ifstream ifs(argv[1]);
-  if(!ifs.fail()){
-    boost::archive::text_iarchive archive(ifs);
-    archive >> map;
-  }
+void interactive_mode(const char *filepath, Map &map){
 
   int ans;
   string key;
@@ -139,8 +129,57 @@ int main(int argc, char **argv){
       dump(map, rettrue);
       break;
     case WRITE:
-      write_map(argv[1], map);
+      write_map(filepath, map);
       break;
     }
   }
+}
+
+void query_mode(const char *filepath, const Map &map, const char *query){
+  typedef Map::const_iterator iter;
+  iter it;
+  const iter itend(map.end());
+  vector<iter> candidates;
+
+  for(it=map.begin(); it!=itend; ++it)
+    if(it->first.find(query) != string::npos)
+      candidates.push_back(it);
+
+  switch(candidates.size()){
+  case 0:
+    cout << "no matching data" << endl;
+    break;
+  case 1:
+    cout << it->second << endl;
+    break;
+  default:
+    for_each
+      (candidates.begin(),
+       candidates.end(),
+       [](iter it){ printline(*it); });
+    break;
+  }
+}
+
+
+int main(int argc, char **argv){
+
+  if(argc == 1 || argc > 3){
+    cout << "usage: " << argv[0] << " <archive> [<query>]" << endl;
+    return 0;
+  }
+
+  bool interactive(argc == 2);
+
+  Map map;
+  ifstream ifs(argv[1]);
+  if(!ifs.fail()){
+    boost::archive::text_iarchive archive(ifs);
+    archive >> map;
+  }
+
+  if(interactive)
+    interactive_mode(argv[1], map);
+  else
+    query_mode(argv[1], map, argv[2]);
 }

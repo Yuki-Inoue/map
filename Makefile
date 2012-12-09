@@ -1,4 +1,4 @@
-CXX = c++
+CXX = c++ -std=c++11
 LDFLAGS = -lboost_serialization
 
 map: map.o
