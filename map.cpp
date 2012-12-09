@@ -135,7 +135,7 @@ void interactive_mode(const char *filepath, Map &map){
   }
 }
 
-void query_mode(const char *filepath, const Map &map, const char *query){
+void query_mode(const Map &map, const char *query){
   typedef Map::const_iterator iter;
   iter it;
   const iter itend(map.end());
@@ -161,15 +161,17 @@ void query_mode(const char *filepath, const Map &map, const char *query){
   }
 }
 
+void insert_mode(const char *filepath, Map &map, string key, string value){
+  map.push_back(make_pair(key,value));
+  write_map(filepath, map);
+}
 
 int main(int argc, char **argv){
 
-  if(argc == 1 || argc > 3){
-    cout << "usage: " << argv[0] << " <archive> [<query>]" << endl;
+  if(argc == 1 || argc > 4){
+    cout << "usage: " << argv[0] << " <archive> [<key> [<value>]]" << endl;
     return 0;
   }
-
-  bool interactive(argc == 2);
 
   Map map;
   ifstream ifs(argv[1]);
@@ -178,8 +180,15 @@ int main(int argc, char **argv){
     archive >> map;
   }
 
-  if(interactive)
+  switch(argc){
+  case 2:
     interactive_mode(argv[1], map);
-  else
-    query_mode(argv[1], map, argv[2]);
+    break;
+  case 3:
+    query_mode(map, argv[2]);
+    break;
+  case 4:
+    insert_mode(argv[1], map, argv[2], argv[3]);
+    break;
+  }
 }
