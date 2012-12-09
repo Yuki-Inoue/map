@@ -1,8 +1,8 @@
 CXX = c++
 LDFLAGS = -lboost_serialization
 
-mymap: mymap.o
-	$(CXX) -o mymap mymap.o $(LDFLAGS)
+map: map.o
+	$(CXX) -o map map.o $(LDFLAGS)
 
-mymap.o: mymap.cpp
-	$(CXX) -c -I../cpplib mymap.cpp
+map.o: map.cpp
+	$(CXX) -c -I../cpplib map.cpp
