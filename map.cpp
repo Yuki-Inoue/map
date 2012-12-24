@@ -150,7 +150,7 @@ void query_mode(const Map &map, const char *query){
     cout << "no matching data" << endl;
     break;
   case 1:
-    cout << it->second << endl;
+    cout << candidates.front()->second << endl;
     break;
   default:
     for_each
