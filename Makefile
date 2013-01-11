@@ -1,8 +1,6 @@
-CXX = c++ -std=c++11
-LDFLAGS = -lboost_serialization
+CXX = g++-mp-4.7 -std=c++11
+CXXFLAGS = -I../cpplib -I/opt/local/includes
+LDLIBS = -L/opt/local/lib -lboost_serialization
 
 map: map.o
-	$(CXX) -o map map.o $(LDFLAGS)
-
-map.o: map.cpp
-	$(CXX) -c -I../cpplib map.cpp
+	$(CXX) -o map map.o $(LDLIBS)
