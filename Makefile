@@ -6,3 +6,7 @@ map: map.o
 
 map.o: map.cpp
 	$(CXX) -c -I../cpplib map.cpp
+
+.PHONY: clean
+clean:
+	rm map map.o
