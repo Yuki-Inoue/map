@@ -13,7 +13,7 @@
 
 using namespace std;
 
-enum {MAKE, DUMP, QUIT, SEARCH, WRITE};
+enum {MAKE, DUMP, QUIT, SEARCH, WRITE, WRITEQUIT};
 enum {NEXT, DELETE};
 
 
@@ -37,6 +37,7 @@ class CMap : public CommandMap<int> {
     map_["q"] = QUIT;
     map_["s"] = SEARCH;
     map_["w"] = WRITE;
+    map_["wq"] = WRITEQUIT;
   }
 public:
   static const CMap &instance() {
@@ -99,9 +100,16 @@ void interactive_mode(const char *filepath, Map &map){
   string key;
   string val;
   Map::iterator it, itend;
+  bool quit_flag = false;
 
-  while((ans = CMap::instance().query()) != QUIT){
+  while(!quit_flag){
+    ans = CMap::instance().query();
     switch(ans){
+    case WRITEQUIT:
+      write_map(filepath, map);
+    case QUIT:
+      quit_flag = true;
+      break;
     case MAKE:
       cout << "\tKey: " << flush;
       getline(cin, key);
